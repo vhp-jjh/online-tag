@@ -1,7 +1,10 @@
+from game_data import GameData
+
 class Engine:
-  def __init__(self, _width, _height):
+  def __init__(self, _width, _height, _radius = 5):
     self.width = _width   #in meters
     self.height = _height #in meters
+    self.radius = _radius
     self.players = []
     self.colors = ["red", "blue", "green", "yellow"]
 
@@ -10,13 +13,13 @@ class Engine:
     #because color serves as id
     n_players = len(self.players)
     if n_players == 0: #this is first player
-      position = (5, 5)
+      position = (self.radius, self.radius)
     elif n_players == 1:
-      position = (self.width - 5, self.height - 5)
+      position = (self.width - self.radius, self.height - self.radius)
     elif n_players == 2:
-      position = (0, self.height - 5)
+      position = (0, self.height - self.radius)
     elif n_players == 3:
-      position = (self.width - 5, 0)
+      position = (self.width - self.radius, 0)
     else:
       print("too many players")
       quit()
@@ -39,5 +42,8 @@ class Engine:
       quit()
 
   #return the game data so the clients can draw it
-  def get_game_data(self):
+  def get_players(self):
     return self.players
+
+  def get_game_data(self):
+    return GameData(self.width, self.height, self.radius)

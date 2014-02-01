@@ -1,6 +1,8 @@
 import pygame
 from gui import Gui
 from player import Player
+from game_data import GameData
+from client import Client
 
 class Game:
   def __init__(self, _players):
@@ -24,21 +26,27 @@ class Game:
     return (x, y, True)
 
 def main():
-  size = 500
-  field = Gui(size, size, 1)
-  #TODO get_game_data
-  #use fake data until client-server is done
-  player1 = Player((100, 100), pygame.Color("blue"), True)
-  player2 = Player((size - 100, size - 100), pygame.Color("red"), False)
-  game = Game([player1, player2])
-  running = True
-  while running:
+  host = "10.32.153.218"
+  port = 12123
+  client = Client(host, port)
+
+  gd = client.get_game_data()
+  field = Gui(gd.width, gd.height, 1.0)
+  players = client.get_players()
+  game = Game(players)
+
+  while True:
     #get input
     inp = game.get_input()
     velocity = (inp[0], inp[1])
-    running = inp[2]
-    #TODO send_velocity(velocity)
-    #TODO gd = get_game_data()
+    if (not inp[2]):
+      break
+
+    #talk to server
+    client.send_velocity(velocity)      #send my velocity to the server
+    game.players = client.get_players() #update the player list
+
+    #draw
     for p in game.players:
       field.draw_player(p.position, p.color, size // 100, p.it)
     pygame.display.flip()
