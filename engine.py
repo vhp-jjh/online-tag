@@ -13,6 +13,7 @@ class Engine:
     self.players = []
     self.colors = [Color("red"), Color("blue"), Color("green"),
                    Color("yellow")]
+    self.freeze_time = 0
 
   #add player and return it's color
   #because color serves as id
@@ -39,13 +40,16 @@ class Engine:
 
   #updates the velocity of the player with the matching color
   def update_velocity(self, color, vel):
+    if self.freeze_time > 0:
+      self.freeze_time -= 1
+
     found = False
     for p in self.players:
       if p.color == color:
         found = True
         new_x = p.position[0] + vel[0]
         new_y = p.position[1] + vel[1]
-        if self.can_move(p, new_x, new_y):
+        if self.handle_collision(p, new_x, new_y):
           p.position = tuple((new_x, new_y))
     if found == False:
       print("color not found in player list")
@@ -57,12 +61,17 @@ class Engine:
 
   @staticmethod
   def tag(p1, p2):
-    tmp = p1.it
-    p1.it = p2.it
-    p2.it = tmp
+    if self.freeze_time == 0:
+      tmp = p1.it
+      p1.it = p2.it
+      p2.it = tmp
 
-  #check for collision
-  def can_move(self, player, x, y):
+      self.freeze_time = TAG_BACK_DELAY
+
+  # Returns if the player can move
+  def handle_collision(self, player, x, y):
+    if player.it and self.freeze_time > 0:
+      return False
     radius = self.radius
     if x - radius< 0 or y - radius < 0 or x + radius > WIDTH \
       or y + radius > HEIGHT:
