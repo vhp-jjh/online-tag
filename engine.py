@@ -2,6 +2,7 @@ from game_data import GameData
 from player import Player
 from constants import *
 from pygame import Color
+from math import sqrt
 
 #TODO collision detection
 class Engine:
@@ -44,22 +45,35 @@ class Engine:
         found = True
         new_x = p.position[0] + vel[0]
         new_y = p.position[1] + vel[1]
-        no_collision = self.can_move(p, new_x, new_y)
-        p.position = tuple((new_x, new_y))
+        if self.can_move(p, new_x, new_y):
+          p.position = tuple((new_x, new_y))
     if found == False:
       print("color not found in player list")
       quit()
+  
+  @staticmethod
+  def distance(x1, y1, x2, y2):
+    return sqrt((x1-x2)**2 + (y1-y2)**2)
 
-  #def distance((x1, y1), (
+  @staticmethod
+  def tag(p1, p2):
+    tmp = p1.it
+    p1.it = p2.it
+    p2.it = tmp
 
   #check for collision
   def can_move(self, player, x, y):
-    if x < 0 or y < 0 or x > WIDTH or y > HEIGHT:
-      return True
+    radius = self.radius
+    if x - radius< 0 or y - radius < 0 or x + radius > WIDTH \
+      or y + radius > HEIGHT:
+      return False
     for p in self.players:
-      if p == player:
-        continue
-
+      if p != player:
+        d = Engine.distance(x, y, p.position[0], p.position[1])
+        if d <= radius + radius:
+          Engine.tag(player, p)
+          return False
+    return True
 
 
   #return the game data so the clients can draw it
