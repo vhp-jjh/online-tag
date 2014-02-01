@@ -1,4 +1,5 @@
 from game_data import GameData
+from player import Player
 from constants import *
 
 #TODO collision detection
@@ -39,11 +40,17 @@ class Engine:
     for p in self.players:
       if p.color == color:
         found = True
-        p.position[0] += vel[0]
-        p.position[1] += vel[1]
+        new_x = p.position[0] + vel[0]
+        new_y = p.position[1] + vel[1]
+        #self.detect_collision(p, newx, newy)
+        p.position = tuple((new_x, new_y))
     if found == False:
       print("color not found in player list")
       quit()
+
+  #check for collision
+  def detect_collision(self, player, x, y):
+    pass
 
   #return the game data so the clients can draw it
   def get_players(self):
