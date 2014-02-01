@@ -1,7 +1,7 @@
 from game_data import GameData
 
 class Engine:
-  def __init__(self, _width, _height, _radius = 5):
+  def __init__(self, _width = 800, _height = 600, _radius = 5):
     self.width = _width   #in meters
     self.height = _height #in meters
     self.radius = _radius
