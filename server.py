@@ -1,12 +1,16 @@
 import socket
 import pickle
-from random import randrange
+import time
+import constants
+from engine import Engine
 
 class Server:
-  def __init__(self, _host, _port):
+  def __init__(self, host, port):
+    self.engine = Engine()
     self.s = socket.socket(socket.AF_INET)
     self.s.bind((host, port))
     self.conns = []
+    self.addr_to_color_map = {}
 
   def listen_for_conns(self, n_players):
     for n_joined in range(n_players):
@@ -15,49 +19,51 @@ class Server:
       conn, addr = self.s.accept()      # Estabilish connection with client
       print("Got connection from", addr)
       self.conns.append((conn, addr))
+      color = self.engine.add_player()
+      self.addr_to_color_map[addr] = color
   
-  def start_game(self):
-    for conn, addr in self.conns:
-      conn.send(b'\x01')
-
-  def read_vels(self):
-    vels = {}
-    for conn, addr in self.conns:
-      # Test reading and sending tuples
-      data = conn.recv(1024)
-      if len(data) > 0:
-        vels[addr] = pickle.loads(data)
-      else:
-        vels[addr] = (0,0)
-    return vels
-
   def send_data(self, data):
-    msg = pickle.dumps(data)
+    msg = pickle.dump(data)
     for conn, addr in self.conns:
       conn.send(msg)
+  
+  def start_game(self):
+    game_data = self.engine.get_game_data()
+    self.send_data(game_data)
+
+  def update_players(self):
+    players = self.engine.get_players()
+    self.send_data(players)
+
+  def update_vels(self):
+    for conn, addr in self.conns:
+      data = conn.recv(1024)
+      if len(data) > 0:
+        vel = pickle.loads(data)
+        color = self.addr_to_color_map[addr]
+        self.engine.update_velocity(color, vel)
 
   def close_conns(self):
     for conn, addr in self.conns:
       conn.close()
     self.conns = []
 
+  def play(self):
+    while True:
+      start = time.time()
+
+      self.update_players()
+      self.update_vels()
+      
+      delay_left = LOOP_TIME - (time.time() - start)
+      if delay_left > 0:
+        time.sleep(delay_left)
+
 if __name__ == "__main__":
-  host = '10.32.153.218' # Vitchyr's Gateway
-  port = 12121
-  server = Server(host, port)
+  server = Server(constants.HOST, constants.PORT)
   
-  num_players = 2
+  num_players = constants.N_PLAYERS
   server.listen_for_conns(2)
   server.start_game()
 
-  while True:
-    vels = server.read_vels()
-    print("Received velocities", vels)
-
-    #game_data = engine.get_game_data()
-    game_data= [(randrange(10), randrange(10)), (randrange(10),randrange(10))]
-    print("Game Data Sent:", game_data)
-
-    server.send_game_data(game_data)
-
-    #server.close_conns()
+  server.play()

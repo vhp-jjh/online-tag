@@ -30,6 +30,7 @@ class Client:
   def close_conn(self):
     self.s.close()
 
+# To test
 if __name__ == "__main__":
   host = '10.32.153.218' # Vitchyr's Gateway
   port = 12121
@@ -42,5 +43,3 @@ if __name__ == "__main__":
 
     players = client.get_players()
     print(players)
-  
-  #client.close_conn()
