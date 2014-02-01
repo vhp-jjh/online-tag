@@ -50,10 +50,10 @@ def main():
 
     #draw
     for p in game.players:
-      field.draw_player(p.position, p.color, size // 100, p.it)
+      field.draw_player(p.position, p.color, gd.radius, p.it)
     pygame.display.flip()
 
-    sleep_time = LOOP_TIME - (time.time() - start_time)
+    sleep_time = constants.LOOP_TIME - (time.time() - start_time)
     if sleep_time > 0:
       time.sleep(sleep_time)
 

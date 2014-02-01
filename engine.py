@@ -1,6 +1,7 @@
 from game_data import GameData
 from player import Player
 from constants import *
+from pygame import Color
 
 #TODO collision detection
 class Engine:
@@ -9,7 +10,8 @@ class Engine:
     self.height = _height #in meters
     self.radius = _radius
     self.players = []
-    self.colors = ["red", "blue", "green", "yellow"]
+    self.colors = [Color("red"), Color("blue"), Color("green"),
+                   Color("yellow")]
 
   #add player and return it's color
   #because color serves as id
@@ -42,15 +44,23 @@ class Engine:
         found = True
         new_x = p.position[0] + vel[0]
         new_y = p.position[1] + vel[1]
-        #self.detect_collision(p, newx, newy)
+        no_collision = self.can_move(p, new_x, new_y)
         p.position = tuple((new_x, new_y))
     if found == False:
       print("color not found in player list")
       quit()
 
+  #def distance((x1, y1), (
+
   #check for collision
-  def detect_collision(self, player, x, y):
-    pass
+  def can_move(self, player, x, y):
+    if x < 0 or y < 0 or x > WIDTH or y > HEIGHT:
+      return True
+    for p in self.players:
+      if p == player:
+        continue
+
+
 
   #return the game data so the clients can draw it
   def get_players(self):
