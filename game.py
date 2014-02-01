@@ -1,6 +1,8 @@
 import pygame
 from gui import Gui
 from player import Player
+from game_data import GameData
+from client import Client
 
 class Game:
   def __init__(self, _players):
@@ -12,33 +14,41 @@ class Game:
       if event.type == pygame.QUIT:
         return (0, 0, False)
       elif event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
+        #respond to arrow keys and wasd
+        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
           x -= 1
-        elif event.key == pygame.K_UP:
+        elif event.key == pygame.K_UP or event.key == pygame.K_w:
           y -= 1
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
           x += 1
-        elif event.key == pygame.K_DOWN:
+        elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
           y += 1
     return (x, y, True)
 
 def main():
-  field = Gui(500, 500, 1)
-  #TODO get_game_data
-  #use fake data until client-server is done
-  player1 = Player((10, 10), pygame.Color("blue"), True)
-  player2 = Player((400, 400), pygame.Color("red"), False)
-  game = Game([player1, player2])
-  running = True
-  while running:
+  host = "10.32.153.218"
+  port = 12123
+  client = Client(host, port)
+
+  gd = client.get_game_data()
+  field = Gui(gd.width, gd.height, 1.0)
+  players = client.get_players()
+  game = Game(players)
+
+  while True:
     #get input
     inp = game.get_input()
     velocity = (inp[0], inp[1])
-    running = inp[2]
-    #TODO send_velocity(velocity)
-    #TODO gd = get_game_data()
+    if (not inp[2]):
+      break
+
+    #talk to server
+    client.send_velocity(velocity)      #send my velocity to the server
+    game.players = client.get_players() #update the player list
+
+    #draw
     for p in game.players:
-      field.draw_player(p.position, p.color, 5, p.it)
+      field.draw_player(p.position, p.color, size // 100, p.it)
     pygame.display.flip()
 
 if __name__ == "__main__":
