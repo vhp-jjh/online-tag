@@ -59,8 +59,7 @@ class Engine:
   def distance(x1, y1, x2, y2):
     return sqrt((x1-x2)**2 + (y1-y2)**2)
 
-  @staticmethod
-  def tag(p1, p2):
+  def tag(self, p1, p2):
     if self.freeze_time == 0:
       tmp = p1.it
       p1.it = p2.it
@@ -80,7 +79,7 @@ class Engine:
       if p != player:
         d = Engine.distance(x, y, p.position[0], p.position[1])
         if d <= radius + radius:
-          Engine.tag(player, p)
+          self.tag(player, p)
           return False
     return True
 
