@@ -6,34 +6,41 @@ class Client:
   def __init__(self, host, port):
     self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     self.s.connect((host, port))
+    self.game_data = self.wait_to_start()
 
   def wait_to_start(self):
     data = self.s.recv(1024)
     while len(data) == 0:
       data = self.s.recv(1024)
+    game_data = pickle.loads(data)
+    return game_data
 
-  def send_vel(self, vel):
+  def update_velocity(self, vel):
     data = pickle.dumps(vel) # Assuming vel is an int tuple (x, y)
     self.s.sendall(data)
 
-  def close_conn(self):
-    self.s.close()
-
-  def read_game_data(self): 
+  def get_players(self): 
     data = self.s.recv(1024)
     msg = pickle.loads(data)
     return msg
+
+  def get_game_data(self):
+    return self.game_data
+
+  def close_conn(self):
+    self.s.close()
 
 if __name__ == "__main__":
   host = '10.32.153.218' # Vitchyr's Gateway
   port = 12121
   client = Client(host, port)
 
-  client.wait_to_start()
   while True:
-    client.send_vel((randrange(10), randrange(10)))
+    vel = randrange(10), randrange(10)
+    client.update_velocity(vel)
+    print("Vel sent", vel)
 
-    data = client.read_game_data()
-    print(data)
+    players = client.get_players()
+    print(players)
   
   #client.close_conn()

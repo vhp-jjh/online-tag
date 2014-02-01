@@ -31,10 +31,10 @@ class Server:
         vels[addr] = (0,0)
     return vels
 
-  def send_game_data(self, game_data):
-    data = pickle.dumps(game_data)
+  def send_data(self, data):
+    msg = pickle.dumps(data)
     for conn, addr in self.conns:
-      conn.send(data)
+      conn.send(msg)
 
   def close_conns(self):
     for conn, addr in self.conns:
@@ -54,9 +54,9 @@ if __name__ == "__main__":
     vels = server.read_vels()
     print("Received velocities", vels)
 
-    # calculate message
-    game_data= [(randrange(10), randrange(10)), (randrange(10),randrange(10))]
     #game_data = engine.get_game_data()
+    game_data= [(randrange(10), randrange(10)), (randrange(10),randrange(10))]
+    print("Game Data Sent:", game_data)
 
     server.send_game_data(game_data)
 
