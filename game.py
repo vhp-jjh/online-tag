@@ -1,5 +1,6 @@
 import pygame
 import time
+import constants
 from gui import Gui
 from player import Player
 from game_data import GameData
@@ -27,9 +28,7 @@ class Game:
     return (x, y, True)
 
 def main():
-  host = "10.32.153.218"
-  port = 12123
-  client = Client(host, port)
+  client = Client(constants.HOST, constants.PORT)
 
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)

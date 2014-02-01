@@ -6,7 +6,8 @@ class Gui:
     self.width = _width   #width of the screen in meters
     self.height = _height #height of the screen in meters
     self.ppm = _ppm       #pixels per meter (float)
-    self.screen = pygame.display.set_mode((_width * _ppm, _height * _ppm))
+    self.screen = pygame.display.set_mode((int(_width * _ppm),
+      int(_height * _ppm)))
 
   def draw_player(self, pos_m, color, radius, it):
     #pos_m and radius measured in meters

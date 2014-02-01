@@ -23,7 +23,7 @@ class Server:
       self.addr_to_color_map[addr] = color
   
   def send_data(self, data):
-    msg = pickle.dump(data)
+    msg = pickle.dumps(data)
     for conn, addr in self.conns:
       conn.send(msg)
   
@@ -55,7 +55,7 @@ class Server:
       self.update_players()
       self.update_vels()
       
-      delay_left = LOOP_TIME - (time.time() - start)
+      delay_left = constants.LOOP_TIME - (time.time() - start)
       if delay_left > 0:
         time.sleep(delay_left)
 
