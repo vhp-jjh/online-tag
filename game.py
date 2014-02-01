@@ -1,4 +1,5 @@
 import pygame
+import time
 from gui import Gui
 from player import Player
 from game_data import GameData
@@ -36,6 +37,8 @@ def main():
   game = Game(players)
 
   while True:
+    start_time = time.time()
+
     #get input
     inp = game.get_input()
     velocity = (inp[0], inp[1])
@@ -50,6 +53,10 @@ def main():
     for p in game.players:
       field.draw_player(p.position, p.color, size // 100, p.it)
     pygame.display.flip()
+
+    sleep_time = LOOP_TIME - (time.time() - start_time)
+    if sleep_time > 0:
+      time.sleep(sleep_time)
 
 if __name__ == "__main__":
     main()

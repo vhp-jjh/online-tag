@@ -1,8 +1,9 @@
 from game_data import GameData
+from constants import *
 
 #TODO collision detection
 class Engine:
-  def __init__(self, _width = 800, _height = 600, _radius = 5):
+  def __init__(self, _width = WIDTH, _height = HEIGHT, _radius = RADIUS):
     self.width = _width   #in meters
     self.height = _height #in meters
     self.radius = _radius
