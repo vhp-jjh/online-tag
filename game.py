@@ -9,23 +9,33 @@ from client import Client
 class Game:
   def __init__(self, _players):
     self.players = _players #list of players in the game
-  def get_input(self):
-    x = 0
-    y = 0
+
+  #takes input, returns velocity and a flag that tells whether velocity should be
+  #changed
+  def get_input(self, x, y):
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        return (0, 0, False)
+        quit()
       elif event.type == pygame.KEYDOWN:
         #respond to arrow keys and wasd
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          x -= 1
+          x -= constants.SPEED
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          y -= 1
+          y -= constants.SPEED
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          x += 1
+          x += constants.SPEED
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          y += 1
-    return (x, y, True)
+          y += constants.SPEED
+      elif event.type == pygame.KEYUP:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+          x += constants.SPEED
+        elif event.key == pygame.K_UP or event.key == pygame.K_w:
+          y += constants.SPEED
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+          x -= constants.SPEED
+        elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+          y -= constants.SPEED
+    return (x, y)
 
 def main():
   client = Client(constants.HOST, constants.PORT)
@@ -35,20 +45,20 @@ def main():
   players = client.get_players()
   game = Game(players)
 
+  velocity = (0, 0)
   while True:
     start_time = time.time()
 
     #get input
-    inp = game.get_input()
+    inp = game.get_input(velocity[0], velocity[1])
     velocity = (inp[0], inp[1])
-    if (not inp[2]):
-      break
 
     #talk to server
     client.update_velocity(velocity)    #send my velocity to the server
     game.players = client.get_players() #update the player list
 
     #draw
+    field.fill_black()
     for p in game.players:
       field.draw_player(p.position, p.color, gd.radius, p.it)
     pygame.display.flip()

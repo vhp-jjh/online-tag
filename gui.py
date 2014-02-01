@@ -10,10 +10,14 @@ class Gui:
     self.screen = pygame.display.set_mode((int(_width * _ppm),
       int(_height * _ppm)))
 
+  def fill_black(self):
+    self.screen.fill(pygame.Color("black"))
+
   def draw_player(self, pos_m, color, radius, it):
     #pos_m and radius measured in meters
     #convert from meters to pixels
     pos_pixels = (int(pos_m[0] * self.ppm), int(pos_m[1] * self.ppm))
+
     #draw the player as a circle
     pygame.draw.circle(self.screen, color, pos_pixels, int(radius * self.ppm))
     if it:
