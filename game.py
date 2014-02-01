@@ -43,7 +43,7 @@ def main():
       break
 
     #talk to server
-    client.send_velocity(velocity)      #send my velocity to the server
+    client.update_velocity(velocity)    #send my velocity to the server
     game.players = client.get_players() #update the player list
 
     #draw
