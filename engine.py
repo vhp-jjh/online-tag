@@ -72,14 +72,17 @@ class Engine:
     if player.it and self.freeze_time > 0:
       return False
     radius = self.radius
-    if x - radius< 0 or y - radius < 0 or x + radius > WIDTH \
+    # handle wall collisions
+    if x - radius < 0 or y - radius < 0 or x + radius > WIDTH \
       or y + radius > HEIGHT:
       return False
+    # handle player-player collisions
     for p in self.players:
       if p != player:
         d = Engine.distance_sqr(x, y, p.position[0], p.position[1])
         if d <= 4*radius*radius:
-          self.tag(player, p)
+          if p.it or player.it:
+            self.tag(player, p)
           return False
     return True
 

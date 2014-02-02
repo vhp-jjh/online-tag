@@ -1,4 +1,4 @@
-LOOP_TIME = .001 #seconds is 20 milliseconds
+LOOP_TIME = .01 #seconds is 10 milliseconds
 WIDTH = 800 #meters
 HEIGHT = 600 #meters
 RADIUS = 5 #meters
@@ -7,7 +7,7 @@ SPEED = 5 #meters per tick
 
 # Rules Constants
 N_PLAYERS = 3
-TAG_BACK_DELAY = 100 # 100 ticks
+TAG_BACK_DELAY = int(5/LOOP_TIME)
 
 # Network Constants
 HOST = '10.32.153.218' # Vitchyr's Gateway
