@@ -19,22 +19,38 @@ class Game:
       elif event.type == pygame.KEYDOWN:
         #respond to arrow keys and wasd
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          x = -constants.SPEED
+          new_speed = x - constants.SPEED
+          if new_speed < -constants.SPEED:
+            x = -constants.SPEED
+          else:
+            x = new_speed
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          y = -constants.SPEED
+          new_speed = y - constants.SPEED
+          if new_speed < -constants.SPEED:
+            y = -constants.SPEED
+          else:
+            y = new_speed
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          x = constants.SPEED
+          new_speed = x + constants.SPEED
+          if new_speed > constants.SPEED:
+            x = constants.SPEED
+          else:
+            x = new_speed
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          y = constants.SPEED
+          new_speed = y + constants.SPEED
+          if new_speed > constants.SPEED:
+            y = constants.SPEED
+          else:
+            y = new_speed
       elif event.type == pygame.KEYUP:
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          x = 0
+          x += constants.SPEED
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          y = 0
+          y += constants.SPEED
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          x = 0
+          x -= constants.SPEED
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          y = 0
+          y -= constants.SPEED
     return (x, y)
 
 def main():
