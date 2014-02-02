@@ -51,14 +51,14 @@ class Server:
   def play(self):
     while True:
       # I don't think server should delay
-      start = time.time()
+      #start = time.time()
 
       self.update_players()
       self.update_vels()
       
-      delay_left = constants.LOOP_TIME - (time.time() - start)
-      if delay_left > 0:
-        time.sleep(delay_left)
+      #delay_left = constants.LOOP_TIME - (time.time() - start)
+      #if delay_left > 0:
+      #  time.sleep(delay_left)
 
 if __name__ == "__main__":
   server = Server(constants.HOST, constants.PORT)
