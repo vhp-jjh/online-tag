@@ -8,6 +8,7 @@ class Server:
   def __init__(self, host, port):
     self.engine = Engine()
     self.s = socket.socket(socket.AF_INET)
+    self.s.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
     self.s.bind((host, port))
     self.conns = []
     self.addr_to_color_map = {}
