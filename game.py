@@ -19,22 +19,22 @@ class Game:
       elif event.type == pygame.KEYDOWN:
         #respond to arrow keys and wasd
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          x -= constants.SPEED
+          x = -constants.SPEED
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          y -= constants.SPEED
+          y = -constants.SPEED
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          x += constants.SPEED
+          x = constants.SPEED
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          y += constants.SPEED
+          y = constants.SPEED
       elif event.type == pygame.KEYUP:
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          x += constants.SPEED
+          x = 0
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          y += constants.SPEED
+          y = 0
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          x -= constants.SPEED
+          x = 0
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          y -= constants.SPEED
+          y = 0
     return (x, y)
 
 def main():
