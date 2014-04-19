@@ -58,7 +58,9 @@ def main():
 
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)
+  print("About to call client.get_playerS()")
   players = client.get_players()
+  print("Done calling client.get_playerS()")
   game = Game(players)
 
   velocity = (0, 0)

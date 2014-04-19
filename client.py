@@ -4,8 +4,9 @@ from random import randrange
 
 class Client:
   def __init__(self, host, port):
-    self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    self.s.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
+    self.s = socket.socket(constants.S_FAMILY, constants.S_TYPE)
+    self.s.settimeout(constants.S_TIMEOUT)
+    #self.s.setsockopt(constants.S_LEVEL, constants.S_OPTNAME, constants.S_VALUE)
     self.s.connect((host, port))
     self.game_data = self.wait_to_start()
 
