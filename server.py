@@ -8,8 +8,10 @@ class Server:
   def __init__(self, host, port):
     self.engine = Engine()
     self.s = socket.socket(constants.S_FAMILY, constants.S_TYPE)
-    self.s.settimeout(constants.S_TIMEOUT)
-    #self.s.setsockopt(constants.S_LEVEL, constants.S_OPTNAME, constants.S_VALUE)
+    # The client, not the server will probably time out.
+    #self.s.settimeout(constants.S_TIMEOUT)
+    # To prevent the "address already in use" error
+    self.s.setsockopt(constants.S_LEVEL, constants.S_OPTNAME, constants.S_VALUE)
     self.s.bind((host, port))
     self.conns = []
     self.addr_to_color_map = {}
