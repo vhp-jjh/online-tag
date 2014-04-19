@@ -1,5 +1,6 @@
 import socket
 import pickle
+import constants
 from random import randrange
 
 class Client:
