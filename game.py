@@ -10,47 +10,49 @@ class Game:
   def __init__(self, _players):
     self.players = _players #list of players in the game
 
-  #takes input, returns velocity and a flag that tells whether velocity should be
-  #changed
-  def get_input(self, x, y):
+  # returns a boolean tuple of 4 directions
+  def get_input(self, dirs):
+    up, down, left, right = dirs
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         quit()
       elif event.type == pygame.KEYDOWN:
         #respond to arrow keys and wasd
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          new_speed = x - constants.SPEED
-          if new_speed < -constants.SPEED:
-            x = -constants.SPEED
-          else:
-            x = new_speed
+          left += 1
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          new_speed = y - constants.SPEED
-          if new_speed < -constants.SPEED:
-            y = -constants.SPEED
-          else:
-            y = new_speed
+          up += 1
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          new_speed = x + constants.SPEED
-          if new_speed > constants.SPEED:
-            x = constants.SPEED
-          else:
-            x = new_speed
+          right += 1
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          new_speed = y + constants.SPEED
-          if new_speed > constants.SPEED:
-            y = constants.SPEED
-          else:
-            y = new_speed
+          down += 1
       elif event.type == pygame.KEYUP:
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          x += constants.SPEED
+          left -= 1
         elif event.key == pygame.K_UP or event.key == pygame.K_w:
-          y += constants.SPEED
+          up -= 1
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-          x -= constants.SPEED
+          right -= 1
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-          y -= constants.SPEED
+          down -= 1
+    return (up, down, left, right)
+  
+  def dirs_to_vel(self, dirs):
+    x = 0
+    y = 0
+    if dirs[0] > 0 and dirs[1] > 0:
+      y = 0
+    elif dirs[0] > 0:
+      y = -constants.SPEED
+    elif dirs[1] > 0:
+      y = constants.SPEED
+
+    if dirs[2] > 0 and dirs[3] > 0:
+      x = 0
+    elif dirs[2] > 0:
+      x = -constants.SPEED
+    elif dirs[3] > 0:
+      x = constants.SPEED
     return (x, y)
 
 def main():
@@ -58,18 +60,17 @@ def main():
 
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)
-  print("About to call client.get_playerS()")
   players = client.get_players()
-  print("Done calling client.get_playerS()")
   game = Game(players)
 
-  velocity = (0, 0)
+  # up, down, left, right
+  dirs = (0, 0, 0, 0)
   while True:
     start_time = time.time()
 
     #get input
-    inp = game.get_input(velocity[0], velocity[1])
-    velocity = (inp[0], inp[1])
+    dirs = game.get_input(dirs)
+    velocity = game.dirs_to_vel(dirs)
 
     #talk to server
     client.update_velocity(velocity)    #send my velocity to the server
