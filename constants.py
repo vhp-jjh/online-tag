@@ -12,7 +12,7 @@ N_PLAYERS = 2
 TAG_BACK_DELAY = int(5/LOOP_TIME)
 
 # Network Constants
-HOST = '10.33.119.92' # Vitchyr's Gateway
+HOST = '192.168.1.1 ' # Vitchyr's Gateway
 #HOST = "10.32.216.142" #Justin
 PORT = 12120
 
