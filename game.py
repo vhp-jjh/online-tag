@@ -3,8 +3,10 @@ import time
 import constants
 from gui import Gui
 from player import Player
-from game_data import GameData
+from game_start_data import GameStartData
 from client import Client
+from utils import printd
+from player_update import PlayerUpdate
 
 class Game:
   def __init__(self, _players):
@@ -58,11 +60,11 @@ class Game:
 def main():
   client = Client(constants.SERVER_ADDR, constants.SERVER_PORT)
 
-  gd = client.get_game_data()
+  gd = client.get_game_start_data()
   field = Gui(gd.width, gd.height, 1.0)
   engine = client.update_engine()
   players = engine.get_players()
-  print("CLIENT: players = {0}".format(players))
+  printd("CLIENT: players = {0}".format(players))
   game = Game(players) # TODO: figure out if we want to bother passing this
 
   # up, down, left, right
@@ -75,7 +77,7 @@ def main():
     velocity = game.dirs_to_vel(dirs)
 
     #talk to server
-    client.update_velocity(velocity)    #send my velocity to the server
+    client.update_player(PlayerUpdate(velocity))    #send my velocity to the server
     engine = client.update_engine()
     game.players = engine.get_players()
 

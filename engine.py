@@ -1,4 +1,4 @@
-from game_data import GameData
+from game_start_data import GameStartData
 from game_update import GameUpdate
 from player import Player
 from constants import *
@@ -37,21 +37,20 @@ class Engine:
     self.players.append(player)
     return col
 
-  def update_velocity(self, color, vel):
+  def update_player(self, player_id, player_update):
+    vel = player_update.get_vel()
     """Updates the velocity of the player with the matching color."""
     if self.freeze_time > 0:
       self.freeze_time -= 1
 
     for p in self.players:
-      if p.color == color:
+      if p.get_color() == player_id:
         if self.player_can_move_to(p, vel):
           p.set_vel(vel)
         else:
           p.set_vel((0,0)) #TODO maybe make them bounce?
         return
 
-    print("color given = {0}".format(color))
-    print("color searched in: {0}".format([p.color for p in self.players]))
     raise Exception("Color not found in player list")
   
   def update_positions(self):
@@ -109,11 +108,11 @@ class Engine:
     for p in self.players:
       p.update_pos()
 
-  def get_game_data(self):
+  def get_game_start_data(self):
     """Get all the game data needed to recreate the entire game."""
-    return GameData(self.width, self.height, self.radius, self.players)
+    return GameStartData(self.width, self.height, self.radius, self.players)
 
-  def set_game_data(self, game_data):
+  def set_game_start_data(self, game_data):
     self.width = game_data.get_width()
     self.height = game_data.get_height()
     self.radius = game_data.get_radius()

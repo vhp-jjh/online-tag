@@ -1,7 +1,6 @@
 import socket
 import pickle
 import constants
-from random import randrange
 from engine import Engine
 from utils import printd
 
@@ -14,9 +13,9 @@ class Client:
     self.s.settimeout(constants.S_START_TIMEOUT)
     self.server_host = server_host # init these before calling wait_to_start
     self.server_port = server_port
-    received_game_data = self.wait_to_start()
-    self.engine.set_game_data(received_game_data)
-    self.local_player_id = received_game_data.get_player_id()
+    game_start_data = self.wait_to_start()
+    self.engine.set_game_start_data(game_start_data)
+    self.local_player_id = game_start_data.get_player_id()
     print("CLIENT: Game started!")
     printd("My id is: {0}".format(self.local_player_id))
 
@@ -31,12 +30,12 @@ class Client:
       reply, addr = self.s.recvfrom(1024)
 
     self.s.settimeout(constants.S_TIMEOUT)
-    game_data = pickle.loads(reply)
-    return game_data
+    game_start_data = pickle.loads(reply)
+    return game_start_data
 
-  def update_velocity(self, vel):
-    self.send_server(vel)
-    self.engine.update_velocity(self.local_player_id, vel)
+  def update_player(self, player_update):
+    self.send_server(player_update)
+    self.engine.update_player(self.local_player_id, player_update)
 
   def update_engine(self):
     """Whenever the client wants to update the state of the game, it should call
@@ -55,22 +54,8 @@ class Client:
 
     return self.engine
 
-  def get_game_data(self):
-    return self.engine.get_game_data()
+  def get_game_start_data(self):
+    return self.engine.get_game_start_data()
 
   def close_conn(self):
     self.s.close()
-
-# To test
-if __name__ == "__main__":
-  host = 'localhost' # Vitchyr's Gateway
-  port = 12121
-  client = Client(host, port)
-
-  while True:
-    vel = randrange(10), randrange(10)
-    client.update_velocity(vel)
-    print("Vel sent", vel)
-
-    players = client.get_players()
-    print(players)

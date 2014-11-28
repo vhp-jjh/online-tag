@@ -1,5 +1,6 @@
-#pretty much just a struct for passing data between games and engine
-class GameData:
+class GameStartData:
+  """A wrapper for all of the data needed to instantiate a game for the first
+  time."""
   def __init__(self, _width, _height, _radius, _players):
     self.width = _width #in meters
     self.height = _height
