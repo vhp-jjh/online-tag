@@ -3,26 +3,33 @@ import pickle
 import constants
 from random import randrange
 
+START = "start"
+
 class Client:
-  def __init__(self, host, port):
+  def __init__(self, server_host, server_port):
     self.s = socket.socket(constants.S_FAMILY, constants.S_TYPE)
-    self.s.settimeout(constants.S_TIMEOUT)
-    self.s.connect((host, port))
+    self.server_host = server_host # init these before calling wait_to_start
+    self.server_port = server_port
     self.game_data = self.wait_to_start()
 
+  def send_server(self, msg):
+    self.s.sendto(pickle.dumps(msg), (self.server_host, self.server_port))
+
   def wait_to_start(self):
-    data = self.s.recv(1024)
-    while len(data) == 0:
-      data = self.s.recv(1024)
-    game_data = pickle.loads(data)
+    reply = ""
+    while reply == "" or reply == None:
+      self.send_server(START)
+      reply, addr = self.s.recvfrom(1024)
+
+    print("Reply from server = {0}".format(reply))
+    game_data = pickle.loads(reply)
     return game_data
 
   def update_velocity(self, vel):
-    data = pickle.dumps(vel) # Assuming vel is an int tuple (x, y)
-    self.s.sendall(data)
+    self.send_server(vel)
 
   def get_players(self): 
-    data = self.s.recv(1024)
+    data, addr = self.s.recvfrom(1024)
     msg = pickle.loads(data)
     return msg
 
@@ -34,7 +41,7 @@ class Client:
 
 # To test
 if __name__ == "__main__":
-  host = '10.32.153.218' # Vitchyr's Gateway
+  host = 'localhost' # Vitchyr's Gateway
   port = 12121
   client = Client(host, port)
 

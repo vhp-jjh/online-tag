@@ -56,7 +56,7 @@ class Game:
     return (x, y)
 
 def main():
-  client = Client(constants.HOST, constants.PORT)
+  client = Client(constants.SERVER_ADDR, constants.SERVER_PORT)
 
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)

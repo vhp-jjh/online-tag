@@ -4,32 +4,31 @@ import time
 import constants
 from engine import Engine
 
+CLOSE = "close"
+
 class Server:
-  def __init__(self, host, port):
+  def __init__(self, port):
     self.engine = Engine()
+    # TODO: Maybe move these to this file
     self.s = socket.socket(constants.S_FAMILY, constants.S_TYPE)
-    # The client, not the server will probably time out.
-    #self.s.settimeout(constants.S_TIMEOUT)
-    # To prevent the "address already in use" error
-    self.s.setsockopt(constants.S_LEVEL, constants.S_OPTNAME, constants.S_VALUE)
-    self.s.bind((host, port))
-    self.conns = []
+    self.s.bind(("", port)) # "" = all available interfaces
+    self.addresses = [] # List of addresses
     self.addr_to_color_map = {}
 
   def listen_for_conns(self, n_players):
     for n_joined in range(n_players):
       print("Waiting for %d players to connect..." % (n_players - n_joined))
-      self.s.listen(5)
-      conn, addr = self.s.accept()      # Estabilish connection with client
-      print("Got connection from", addr)
-      self.conns.append((conn, addr))
-      color = self.engine.add_player()
-      self.addr_to_color_map[addr] = color
+      data = ""
+      while data == "" or data == None:
+        data, addr = self.s.recvfrom(1024)
+
+      self.addresses.append(addr)
+      self.addr_to_color_map[addr] = self.engine.add_player()
   
   def send_data(self, data):
     msg = pickle.dumps(data)
-    for conn, addr in self.conns:
-      conn.send(msg)
+    for addr in self.addresses:
+      self.s.sendto(msg, addr)
   
   def start_game(self):
     game_data = self.engine.get_game_data()
@@ -40,17 +39,15 @@ class Server:
     self.send_data(players)
 
   def update_vels(self):
-    for conn, addr in self.conns:
-      data = conn.recv(1024)
-      if len(data) > 0:
+    for addr in self.addresses:
+      data, addr_recv = self.s.recvfrom(1024)
+      if len(data) > 0 and addr_recv == addr:
         vel = pickle.loads(data)
         color = self.addr_to_color_map[addr]
         self.engine.update_velocity(color, vel)
 
   def close_conns(self):
-    for conn, addr in self.conns:
-      conn.close()
-    self.conns = []
+    self.send_data(CLOSE)
 
   def play(self):
     while True:
@@ -65,9 +62,9 @@ class Server:
       #  time.sleep(delay_left)
 
 if __name__ == "__main__":
-  server = Server(constants.HOST, constants.PORT)
-  
+  server = Server(constants.SERVER_PORT)
   server.listen_for_conns(constants.N_PLAYERS)
+  print("SERVER: Game started!")
   server.start_game()
 
   server.play()

@@ -86,7 +86,6 @@ class Engine:
           return False
     return True
 
-
   #return the game data so the clients can draw it
   def get_players(self):
     return self.players
