@@ -27,6 +27,7 @@ class Server:
       self.addr_to_color_map[addr] = color
   
   def send_data(self, data):
+    time.sleep(0.001) # Hack to make things in sync
     msg = pickle.dumps(data)
     for conn, addr in self.conns:
       conn.send(msg)
@@ -68,6 +69,7 @@ if __name__ == "__main__":
   server = Server(constants.HOST, constants.PORT)
   
   server.listen_for_conns(constants.N_PLAYERS)
+  print("SERVER: Game started")
   server.start_game()
 
   server.play()

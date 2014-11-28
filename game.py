@@ -57,7 +57,7 @@ class Game:
 
 def main():
   client = Client(constants.HOST, constants.PORT)
-
+  print("CLIENT: Game started")
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)
   players = client.get_players()
