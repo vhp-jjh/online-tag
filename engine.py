@@ -112,8 +112,8 @@ class Engine:
     """Get all the game data needed to recreate the entire game."""
     return GameStartData(self.width, self.height, self.radius, self.players)
 
-  def set_game_start_data(self, game_data):
-    self.width = game_data.get_width()
-    self.height = game_data.get_height()
-    self.radius = game_data.get_radius()
-    self.players = game_data.get_players()
+  def set_game_start_data(self, game_start_data):
+    self.width = game_start_data.get_width()
+    self.height = game_start_data.get_height()
+    self.radius = game_start_data.get_radius()
+    self.players = game_start_data.get_players()
