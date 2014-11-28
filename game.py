@@ -60,8 +60,10 @@ def main():
 
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)
-  players = client.get_players(None)
-  game = Game(players)
+  engine = client.update_engine()
+  players = engine.get_players()
+  print("CLIENT: players = {0}".format(players))
+  game = Game(players) # TODO: figure out if we want to bother passing this
 
   # up, down, left, right
   dirs = (0, 0, 0, 0)
@@ -74,12 +76,13 @@ def main():
 
     #talk to server
     client.update_velocity(velocity)    #send my velocity to the server
-    game.players = client.get_players() #update the player list
+    engine = client.update_engine()
+    game.players = engine.get_players()
 
     #draw
     field.fill_black()
     for p in game.players:
-      field.draw_player(p.position, p.color, gd.radius, p.it)
+      field.draw_player(p.get_pos(), p.get_color(), gd.radius, p.is_it())
     pygame.display.flip()
 
     sleep_time = constants.LOOP_TIME - (time.time() - start_time)

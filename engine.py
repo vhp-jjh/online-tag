@@ -1,10 +1,10 @@
 from game_data import GameData
+from game_update import GameUpdate
 from player import Player
 from constants import *
 from pygame import Color
 from math import sqrt
 
-#TODO collision detection
 class Engine:
   def __init__(self, _width = WIDTH, _height = HEIGHT, _radius = RADIUS):
     self.width = _width   #in meters
@@ -15,9 +15,8 @@ class Engine:
                    Color("yellow")]
     self.freeze_time = 0
 
-  #add player and return it's color
-  #because color serves as id
   def add_player(self):
+    """add player and return it's color, which serves as a player's id."""
     #calculate position
     n_players = len(self.players)
     if n_players == 0: #this is first player
@@ -38,23 +37,28 @@ class Engine:
     self.players.append(player)
     return col
 
-  #updates the velocity of the player with the matching color
   def update_velocity(self, color, vel):
+    """Updates the velocity of the player with the matching color."""
     if self.freeze_time > 0:
       self.freeze_time -= 1
 
-    found = False
     for p in self.players:
       if p.color == color:
-        found = True
-        new_x = p.position[0] + vel[0]
-        new_y = p.position[1] + vel[1]
-        if self.handle_collision(p, new_x, new_y):
-          p.position = tuple((new_x, new_y))
-    if found == False:
-      print("color not found in player list")
-      quit()
+        if self.player_can_move_to(p, vel):
+          p.set_vel(vel)
+        else:
+          p.set_vel((0,0)) #TODO maybe make them bounce?
+        return
+
+    print("color given = {0}".format(color))
+    print("color searched in: {0}".format([p.color for p in self.players]))
+    raise Exception("Color not found in player list")
   
+  def update_positions(self):
+    """Update the position of each player based on their velocities."""
+    for p in self.players:
+      p.update_pos()
+
   @staticmethod
   def distance_sqr(x1, y1, x2, y2):
     return (x1-x2)**2 + (y1-y2)**2
@@ -67,8 +71,9 @@ class Engine:
 
       self.freeze_time = TAG_BACK_DELAY
 
-  # Returns if the player can move
-  def handle_collision(self, player, x, y):
+  # Returns if the player can move in a certain velocity
+  def player_can_move_to(self, player, vel):
+    x, y = player.predict_pos(vel)
     if player.it and self.freeze_time > 0:
       return False
     radius = self.radius
@@ -79,7 +84,7 @@ class Engine:
     # handle player-player collisions
     for p in self.players:
       if p != player:
-        d = Engine.distance_sqr(x, y, p.position[0], p.position[1])
+        d = Engine.distance_sqr(x, y, p.get_pos()[0], p.get_pos()[1])
         if d <= 4*radius*radius:
           if p.it or player.it:
             self.tag(player, p)
@@ -90,5 +95,26 @@ class Engine:
   def get_players(self):
     return self.players
 
+  def get_game_update(self):
+    """Get all the data needed to update the game since the game was created or
+    since the last time an update was made. Note that this will return less
+    information than get_game_data."""
+    return GameUpdate(self.players)
+
+  def update(self, game_update):
+    self.players = game_update.get_players()
+
+  def update_default(self):
+    """Do an update if nothing is received from the server."""
+    for p in self.players:
+      p.update_pos()
+
   def get_game_data(self):
-    return GameData(self.width, self.height, self.radius)
+    """Get all the game data needed to recreate the entire game."""
+    return GameData(self.width, self.height, self.radius, self.players)
+
+  def set_game_data(self, game_data):
+    self.width = game_data.get_width()
+    self.height = game_data.get_height()
+    self.radius = game_data.get_radius()
+    self.players = game_data.get_players()

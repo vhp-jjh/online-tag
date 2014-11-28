@@ -1,5 +1,7 @@
 import socket
+DEBUG = False
 
+# Game Rules
 LOOP_TIME = .01 #seconds is 10 milliseconds
 WIDTH = 800 #meters
 HEIGHT = 600 #meters
@@ -17,10 +19,10 @@ TAG_BACK_DELAY = int(5/LOOP_TIME)
 # SERVER_ADDR = '192.168.15.14'
 SERVER_ADDR = 'localhost'
 SERVER_PORT = 12120
-TIMEOUT = 1
 
 # Socket Constants
-S_TIMEOUT = 5.0
+S_START_TIMEOUT = 10.0
+S_TIMEOUT = 0.01
 S_LEVEL = socket.SOL_SOCKET
 S_OPTNAME = socket.SO_REUSEADDR
 S_VALUE = 1
