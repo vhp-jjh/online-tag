@@ -14,9 +14,10 @@ TAG_BACK_DELAY = int(5/LOOP_TIME)
 # Network Constants
 # HOST = '98.159.211.222' # Vitchyr's Gateway
 # HOST = "192.168.2.12" #Justin
+# SERVER_ADDR = '192.168.15.14'
 SERVER_ADDR = 'localhost'
 SERVER_PORT = 12120
-TIMEOUT = 100
+TIMEOUT = 1
 
 # Socket Constants
 S_TIMEOUT = 5.0

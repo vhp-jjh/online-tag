@@ -36,7 +36,7 @@ class Server:
 
   def update_players(self):
     players = self.engine.get_players()
-    self.send_data(players)
+    #self.send_data(players)
 
   def update_vels(self):
     for addr in self.addresses:

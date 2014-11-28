@@ -60,7 +60,7 @@ def main():
 
   gd = client.get_game_data()
   field = Gui(gd.width, gd.height, 1.0)
-  players = client.get_players()
+  players = client.get_players(None)
   game = Game(players)
 
   # up, down, left, right
