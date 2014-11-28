@@ -1,12 +1,14 @@
 import pygame
 import time
 import constants
+import sys
 from gui import Gui
 from player import Player
 from game_start_data import GameStartData
 from client import Client
 from utils import printd
 from player_update import PlayerUpdate
+from engine import Engine
 
 class Game:
   def __init__(self, _players):
@@ -58,7 +60,10 @@ class Game:
     return (x, y)
 
 def main():
-  client = Client(constants.SERVER_ADDR, constants.SERVER_PORT)
+  if len(sys.argv) > 1:
+    client = Client(Engine(), sys.argv[1], constants.SERVER_PORT)
+  else:
+    client = Client(Engine(), constants.SERVER_ADDR, constants.SERVER_PORT)
 
   gd = client.get_game_start_data()
   field = Gui(gd.width, gd.height, 1.0)

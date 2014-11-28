@@ -1,14 +1,13 @@
 import socket
 import pickle
 import constants
-from engine import Engine
 from utils import printd
 
 START = "start"
 
 class Client:
-  def __init__(self, server_host, server_port):
-    self.engine = Engine()
+  def __init__(self, engine, server_host, server_port):
+    self.engine = engine
     self.s = socket.socket(constants.S_FAMILY, constants.S_TYPE)
     self.s.settimeout(constants.S_START_TIMEOUT)
     self.server_host = server_host # init these before calling wait_to_start
@@ -18,6 +17,7 @@ class Client:
     self.local_player_id = game_start_data.get_player_id()
     print("CLIENT: Game started!")
     printd("My id is: {0}".format(self.local_player_id))
+    self.n_dropped = 0
 
   def send_server(self, msg):
     self.s.sendto(pickle.dumps(msg), (self.server_host, self.server_port))
@@ -26,7 +26,6 @@ class Client:
     reply = ""
     self.send_server(START)
     while reply == "" or reply == None:
-      printd("CLIENT: Waiting for game data")
       reply, addr = self.s.recvfrom(1024)
 
     self.s.settimeout(constants.S_TIMEOUT)
@@ -42,14 +41,13 @@ class Client:
     this method. This will return the appropriate engine, which will either have
     been updated because it received something from the server, or
     because it predicted something while waiting for the server to reply."""
-    printd("CLIENT: waiting for data")
     try:
       data, addr = self.s.recvfrom(1024)
       update_received = pickle.loads(data)
       self.engine.update(update_received)
-      printd("CLIENT: received update from server")
     except socket.timeout:
-      printd("CLIENT: nothing received")
+      printd("CLIENT: nothing received. # dropped = {0}".format(self.n_dropped))
+      self.n_dropped += 1
       self.engine.update_default()
 
     return self.engine

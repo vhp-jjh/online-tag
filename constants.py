@@ -16,12 +16,13 @@ TAG_BACK_DELAY = int(5/LOOP_TIME)
 # Network Constants
 # HOST = '98.159.211.222' # Vitchyr's Gateway
 # HOST = "192.168.2.12" #Justin
-# SERVER_ADDR = '192.168.15.14'
-SERVER_ADDR = 'localhost'
+SERVER_ADDR = '192.168.15.12'
+# SERVER_ADDR = 'localhost'
 SERVER_PORT = 12120
+DROP_RATE = 0 if not DEBUG else 0.05
 
 # Socket Constants
-S_START_TIMEOUT = 10.0
+S_START_TIMEOUT = 60.0
 S_TIMEOUT = 0.01
 S_LEVEL = socket.SOL_SOCKET
 S_OPTNAME = socket.SO_REUSEADDR

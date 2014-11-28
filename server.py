@@ -4,12 +4,13 @@ import time
 import constants
 from utils import printd
 from engine import Engine
+import random
 
 CLOSE = "close"
 
 class Server:
-  def __init__(self, port):
-    self.engine = Engine()
+  def __init__(self, engine, port):
+    self.engine = engine
     self.s = socket.socket(constants.S_FAMILY, constants.S_TYPE)
     self.port = port
     self.s.bind(("", self.port)) # "" = all available interfaces
@@ -29,7 +30,10 @@ class Server:
   def send_data(self, data):
     msg = pickle.dumps(data)
     for addr in self.addresses:
-      self.s.sendto(msg, addr)
+      if random.random() >= constants.DROP_RATE:
+        self.s.sendto(msg, addr)
+      else:
+        printd("SERVER: dropping packet")
   
   def start_game(self):
     print("SERVER: Game started!")
@@ -40,21 +44,16 @@ class Server:
     self.s.settimeout(constants.S_TIMEOUT)
 
   def send_update_to_clients(self):
-    printd("SERVER: start send_update_to_clients")
     update = self.engine.get_game_update()
     self.send_data(update)
-    printd("SERVER: end send_update_to_clients")
 
   def get_updates_from_clients(self):
-    printd("SERVER: start get_updates_from_clients")
     waiting_for = list(self.addresses) # to get a copy not pointer
-    printd("SERVER: address = {0}".format(self.addresses))
     # for i in range(len(self.addresses)): #TODO: maybe make this smarter
     data = ""
     while len(waiting_for) > 0:
       try:
         data, addr_recv = self.s.recvfrom(1024)
-        printd("SERVER: data received from {0}. data = {1}".format(addr_recv,data))
       except socket.timeout:
         printd("SERVER: no data received")
       if len(data) > 0 and addr_recv in waiting_for:
@@ -64,7 +63,6 @@ class Server:
         waiting_for.remove(addr_recv)
 
     self.engine.update_positions()
-    printd("SERVER: end get_updates_from_clients")
 
   def close_conns(self):
     self.send_data(CLOSE)
@@ -75,7 +73,8 @@ class Server:
       self.get_updates_from_clients()
 
 if __name__ == "__main__":
-  server = Server(constants.SERVER_PORT)
+  random.seed(time.time())
+  server = Server(Engine(), constants.SERVER_PORT)
   server.wait_for_players(constants.N_PLAYERS)
   server.start_game()
   server.play()
