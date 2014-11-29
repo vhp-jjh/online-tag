@@ -30,6 +30,7 @@ class Server:
   def send_data(self, data):
     msg = pickle.dumps(data)
     for addr in self.addresses:
+      # DROP_RATE is zero if DEBUG is set to false
       if random.random() >= constants.DROP_RATE:
         self.s.sendto(msg, addr)
       else:
