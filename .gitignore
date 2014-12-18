@@ -1,6 +1,9 @@
 *.swp
 *.py[cod]
 
+# Gvim crap
+*.*~
+
 # C extensions
 *.so
 
