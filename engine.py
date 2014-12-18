@@ -55,16 +55,18 @@ class Engine:
             # through it is a bad idea, it's okay because we're
             # about to return
             self.players.remove(p)
+            if len(self.players) <= 1:
+              return GAME_OVER_MESSAGE
             random.choice(self.players).it = True
         if self.player_can_move_to(p, vel):
           p.set_vel(vel)
         else:
           p.set_vel((0,0)) #TODO maybe make them bounce?
-        return
+        return OKAY_MESSAGE
 
     #raise Exception("Color not found in player list")
     # server trying to update dead player. just ignore it.
-    return
+    return OKAY_MESSAGE
   
   def update_positions(self):
     """Update the position of each player based on their velocities."""

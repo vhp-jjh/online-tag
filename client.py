@@ -1,6 +1,7 @@
 import socket
 import pickle
 import constants
+import sys
 from utils import printd
 
 START = "start"
@@ -44,6 +45,9 @@ class Client:
     try:
       data, addr = self.s.recvfrom(1024)
       update_received = pickle.loads(data)
+      if isinstance(update_received, str):
+        print(update_received)
+        sys.exit()
       self.engine.update(update_received)
     except socket.timeout:
       printd("CLIENT: nothing received. # dropped = {0}".format(self.n_dropped))

@@ -5,6 +5,7 @@ import constants
 from utils import printd
 from engine import Engine
 import random
+import sys
 
 CLOSE = "close"
 
@@ -60,7 +61,10 @@ class Server:
       if len(data) > 0 and addr_recv in waiting_for:
         player_update = pickle.loads(data)
         player_id = self.addr_to_player_id_map[addr_recv]
-        self.engine.update_player(player_id, player_update)
+        status_message = self.engine.update_player(player_id, player_update)
+        if status_message == constants.GAME_OVER_MESSAGE:
+          self.close_conns()
+          sys.exit()
         waiting_for.remove(addr_recv)
 
     self.engine.update_positions()
