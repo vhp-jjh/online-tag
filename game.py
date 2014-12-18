@@ -40,24 +40,6 @@ class Game:
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
           down -= 1
     return (up, down, left, right)
-  
-  def dirs_to_vel(self, dirs):
-    x = 0
-    y = 0
-    if dirs[0] > 0 and dirs[1] > 0:
-      y = 0
-    elif dirs[0] > 0:
-      y = -constants.SPEED
-    elif dirs[1] > 0:
-      y = constants.SPEED
-
-    if dirs[2] > 0 and dirs[3] > 0:
-      x = 0
-    elif dirs[2] > 0:
-      x = -constants.SPEED
-    elif dirs[3] > 0:
-      x = constants.SPEED
-    return (x, y)
 
 def main():
   if len(sys.argv) > 1:
@@ -79,10 +61,9 @@ def main():
 
     #get input
     dirs = game.get_input(dirs)
-    velocity = game.dirs_to_vel(dirs)
 
     #talk to server
-    client.update_player(PlayerUpdate(velocity))    #send my velocity to the server
+    client.update_player(PlayerUpdate(dirs))    #send my velocity to the server
     engine = client.update_engine()
     game.players = engine.get_players()
 

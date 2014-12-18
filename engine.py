@@ -15,6 +15,25 @@ class Engine:
                    Color("yellow")]
     self.freeze_time = 0
 
+  @staticmethod
+  def dirs_to_vel(dirs):
+    x = 0
+    y = 0
+    if dirs[0] > 0 and dirs[1] > 0:
+      y = 0
+    elif dirs[0] > 0:
+      y = -SPEED
+    elif dirs[1] > 0:
+      y = SPEED
+
+    if dirs[2] > 0 and dirs[3] > 0:
+      x = 0
+    elif dirs[2] > 0:
+      x = -SPEED
+    elif dirs[3] > 0:
+      x = SPEED
+    return (x, y)
+
   def add_player(self):
     """add player and return it's color, which serves as a player's id."""
     #calculate position
@@ -38,7 +57,8 @@ class Engine:
     return col
 
   def update_player(self, player_id, player_update):
-    vel = player_update.get_vel()
+    dirs = player_update.get_player_dir()
+    vel = Engine.dirs_to_vel(dirs)
     """Updates the velocity of the player with the matching color."""
     if self.freeze_time > 0:
       self.freeze_time -= 1
