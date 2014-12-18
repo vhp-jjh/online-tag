@@ -4,6 +4,7 @@ from player import Player
 from constants import *
 from pygame import Color
 from math import sqrt
+import random
 
 class Engine:
   def __init__(self, _width = WIDTH, _height = HEIGHT, _radius = RADIUS):
@@ -14,6 +15,7 @@ class Engine:
     self.colors = [Color("red"), Color("blue"), Color("green"),
                    Color("yellow")]
     self.freeze_time = 0
+    self.dead_players = []
 
   def add_player(self):
     """add player and return it's color, which serves as a player's id."""
@@ -33,7 +35,7 @@ class Engine:
 
     #create new player
     col = self.colors[n_players]
-    player = Player(position, col, n_players == 0)
+    player = Player(position, col, n_players == 0, INIT_HEALTH)
     self.players.append(player)
     return col
 
@@ -45,13 +47,24 @@ class Engine:
 
     for p in self.players:
       if p.get_color() == player_id:
+        if p.is_it():
+          p.decrement_health()
+          if p.get_health() == 0:
+            # kill this player and make someone else it.
+            # Although usually removing from a list while iterating
+            # through it is a bad idea, it's okay because we're
+            # about to return
+            self.players.remove(p)
+            random.choice(self.players).it = True
         if self.player_can_move_to(p, vel):
           p.set_vel(vel)
         else:
           p.set_vel((0,0)) #TODO maybe make them bounce?
         return
 
-    raise Exception("Color not found in player list")
+    #raise Exception("Color not found in player list")
+    # server trying to update dead player. just ignore it.
+    return
   
   def update_positions(self):
     """Update the position of each player based on their velocities."""

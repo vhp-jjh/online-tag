@@ -61,6 +61,7 @@ class Game:
 
 def main():
   if len(sys.argv) > 1:
+    print(sys.argv[1])
     client = Client(Engine(), sys.argv[1], constants.SERVER_PORT)
   else:
     client = Client(Engine(), constants.SERVER_ADDR, constants.SERVER_PORT)
