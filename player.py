@@ -4,6 +4,7 @@ class Player:
     self.color = _color       #has type pygame.Color. also serves as id
     self.it = _it             #boolean. is this player it?
     self.vel = tuple(0 for i in range(len(_pos)))
+    self.init_health = _health
     self.health = _health
 
   def set_vel(self, vel):
@@ -26,6 +27,9 @@ class Player:
 
   def get_health(self):
     return self.health
+
+  def reset_health(self):
+    self.health = self.init_health
     
   def decrement_health(self):
     self.health -= 1

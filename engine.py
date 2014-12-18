@@ -121,6 +121,8 @@ class Engine:
         d = Engine.distance_sqr(x, y, p.get_pos()[0], p.get_pos()[1])
         if d <= 4*radius*radius:
           if p.it or player.it:
+            p.reset_health()
+            player.reset_health()
             self.tag(player, p)
           return False
     return True

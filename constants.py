@@ -15,7 +15,7 @@ TAG_BACK_DELAY = int(5/LOOP_TIME)
 
 # Health decreases while player is it
 # if it reaches zero, the player is elminated
-INIT_HEALTH = int(2 / LOOP_TIME)
+INIT_HEALTH = int(20 / LOOP_TIME)
 
 # Network Constants
 # HOST = '98.159.211.222' # Vitchyr's Gateway
