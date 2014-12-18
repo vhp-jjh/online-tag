@@ -1,9 +1,10 @@
 class Player:
-  def __init__(self, _pos, _color, _it):
+  def __init__(self, _pos, _color, _it, _health):
     self.pos = _pos #tuple of ints. x, y position in meters
     self.color = _color       #has type pygame.Color. also serves as id
     self.it = _it             #boolean. is this player it?
     self.vel = tuple(0 for i in range(len(_pos)))
+    self.health = _health
 
   def set_vel(self, vel):
     self.vel = vel
@@ -22,3 +23,9 @@ class Player:
 
   def is_it(self):
     return self.it
+
+  def get_health(self):
+    return self.health
+    
+  def decrement_health(self):
+    self.health -= 1

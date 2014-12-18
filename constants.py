@@ -13,13 +13,17 @@ SPEED = 5 #meters per tick
 N_PLAYERS = 2
 TAG_BACK_DELAY = int(5/LOOP_TIME)
 
+# Health decreases while player is it
+# if it reaches zero, the player is elminated
+INIT_HEALTH = int(20 / LOOP_TIME)
+
 # Network Constants
 # HOST = '98.159.211.222' # Vitchyr's Gateway
 # HOST = "192.168.2.12" #Justin
 SERVER_ADDR = '192.168.15.12'
 # SERVER_ADDR = 'localhost'
 SERVER_PORT = 12120
-DROP_RATE = 0 if not DEBUG else 0.05
+DROP_RATE = 0 if not DEBUG else 0.10
 
 # Socket Constants
 S_START_TIMEOUT = 60.0
