@@ -6,6 +6,7 @@ from utils import printd
 from engine import Engine
 import random
 import sys
+import time
 
 CLOSE = "close"
 
@@ -81,5 +82,6 @@ if __name__ == "__main__":
   random.seed(time.time())
   server = Server(Engine(), constants.SERVER_PORT)
   server.wait_for_players(constants.N_PLAYERS)
+  time.sleep(1)
   server.start_game()
   server.play()
